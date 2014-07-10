@@ -185,7 +185,7 @@ long long int generate_key(long long int start_key, int number)
 
 	for(counter=1; counter<=number; counter++)
 	{
-		if(counter == 1 || counter == 2 || counter == 9 ||counter == 16)
+        if(counter == 1 || counter == 2 || counter == 9 || counter == 16)
 		{
 			c_key = rotate_dived_key(c_key,1);
 			d_key = rotate_dived_key(d_key,1);

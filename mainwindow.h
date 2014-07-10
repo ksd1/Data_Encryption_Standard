@@ -26,11 +26,12 @@ private:
     int encryptFile();
     int decryptFile();
     void toCharArray(long long int value, char* buffer);
+    void setProgressBarMax(int);
 
 
 private slots:
     void on_browseInputFileButton_clicked();
-    void progressBar_ChangeValue();
+    void progressBar_ChangeValue(int);
     void on_executeButton_clicked();
 
     void on_browseKeyFileButton_clicked();
