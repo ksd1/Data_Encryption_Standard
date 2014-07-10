@@ -25,9 +25,9 @@
      <colorrole role="Window">
       <brush brushstyle="SolidPattern">
        <color alpha="255">
-        <red>218</red>
-        <green>218</green>
-        <blue>218</blue>
+        <red>177</red>
+        <green>177</green>
+        <blue>177</blue>
        </color>
       </brush>
      </colorrole>
@@ -45,9 +45,9 @@
      <colorrole role="Window">
       <brush brushstyle="SolidPattern">
        <color alpha="255">
-        <red>218</red>
-        <green>218</green>
-        <blue>218</blue>
+        <red>177</red>
+        <green>177</green>
+        <blue>177</blue>
        </color>
       </brush>
      </colorrole>
@@ -56,18 +56,18 @@
      <colorrole role="Base">
       <brush brushstyle="SolidPattern">
        <color alpha="255">
-        <red>218</red>
-        <green>218</green>
-        <blue>218</blue>
+        <red>177</red>
+        <green>177</green>
+        <blue>177</blue>
        </color>
       </brush>
      </colorrole>
      <colorrole role="Window">
       <brush brushstyle="SolidPattern">
        <color alpha="255">
-        <red>218</red>
-        <green>218</green>
-        <blue>218</blue>
+        <red>177</red>
+        <green>177</green>
+        <blue>177</blue>
        </color>
       </brush>
      </colorrole>
@@ -142,7 +142,7 @@
       <string>Przeglądaj</string>
      </property>
     </widget>
-    <widget class="QLineEdit" name="keyFileNameTextBox">
+    <widget class="QLineEdit" name="outputFileNameTextBox">
      <property name="geometry">
       <rect>
        <x>150</x>
@@ -150,6 +150,9 @@
        <width>351</width>
        <height>20</height>
       </rect>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
      </property>
     </widget>
     <widget class="QLabel" name="label_2">
@@ -164,8 +167,14 @@
      <property name="text">
       <string>Plik wynikowy</string>
      </property>
+     <property name="buddy">
+      <cstring>outputFileNameTextBox</cstring>
+     </property>
     </widget>
     <widget class="QLineEdit" name="inputFileNameTextBox">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
      <property name="geometry">
       <rect>
        <x>150</x>
@@ -173,6 +182,9 @@
        <width>351</width>
        <height>20</height>
       </rect>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
      </property>
     </widget>
     <widget class="QPushButton" name="browseInputFileButton">
@@ -199,6 +211,9 @@
      </property>
      <property name="text">
       <string>Scieżka do pliku</string>
+     </property>
+     <property name="buddy">
+      <cstring>inputFileNameTextBox</cstring>
      </property>
     </widget>
    </widget>
@@ -239,6 +254,9 @@
      <property name="text">
       <string>Klucz</string>
      </property>
+     <property name="buddy">
+      <cstring>keyTextBox</cstring>
+     </property>
     </widget>
     <widget class="QLineEdit" name="keyTextBox">
      <property name="geometry">
@@ -250,10 +268,6 @@
       </rect>
      </property>
     </widget>
-    <zorder>autoGenerateKeyCheckBox</zorder>
-    <zorder>label_3</zorder>
-    <zorder>keyTextBox</zorder>
-    <zorder>verticalSpacer</zorder>
    </widget>
    <widget class="QPushButton" name="executeButton">
     <property name="geometry">
@@ -293,12 +307,12 @@
     <property name="title">
      <string>Algorytm szyfrowania</string>
     </property>
-    <widget class="QRadioButton" name="radioButton_3">
+    <widget class="QRadioButton" name="desAlgorithmRadioButton">
      <property name="geometry">
       <rect>
        <x>10</x>
        <y>30</y>
-       <width>82</width>
+       <width>41</width>
        <height>17</height>
       </rect>
      </property>
@@ -329,6 +343,18 @@
   <widget class="QStatusBar" name="statusBar"/>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <tabstops>
+  <tabstop>autoGenerateKeyCheckBox</tabstop>
+  <tabstop>decryptionRadioButton</tabstop>
+  <tabstop>inputFileNameTextBox</tabstop>
+  <tabstop>browseInputFileButton</tabstop>
+  <tabstop>outputFileNameTextBox</tabstop>
+  <tabstop>keyTextBox</tabstop>
+  <tabstop>executeButton</tabstop>
+  <tabstop>desAlgorithmRadioButton</tabstop>
+  <tabstop>browseKeyFileButton</tabstop>
+  <tabstop>encryptionRadioButton</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

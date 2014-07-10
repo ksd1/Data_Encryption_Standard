@@ -423,3 +423,4 @@ long long int decrypt_message(long long int message, long long int key)
 	end_data = final_permute(end_data);
 	return end_data;
 }
+
