@@ -14,9 +14,13 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    des_c_dll.cpp
+    des_c_dll.cpp\
+    plugin_import.cpp
 
 HEADERS  += mainwindow.h \
     des_c_dll.h
 
 FORMS    += mainwindow.ui
+
+LIBS += Qt5PlatformSupportd.lib windowsd.lib rpcrt4.lib
+

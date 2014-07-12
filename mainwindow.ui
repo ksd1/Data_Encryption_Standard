@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>690</width>
-    <height>619</height>
+    <height>696</height>
    </rect>
   </property>
   <property name="palette">
@@ -129,7 +129,7 @@
     <property name="title">
      <string>Scieżki do plików</string>
     </property>
-    <widget class="QPushButton" name="browseKeyFileButton">
+    <widget class="QPushButton" name="browseOutputFileButton">
      <property name="geometry">
       <rect>
        <x>510</x>
@@ -223,32 +223,19 @@
       <x>20</x>
       <y>310</y>
       <width>641</width>
-      <height>141</height>
+      <height>201</height>
      </rect>
     </property>
     <property name="title">
      <string>Klucz szyfrowania</string>
     </property>
-    <widget class="QCheckBox" name="autoGenerateKeyCheckBox">
-     <property name="geometry">
-      <rect>
-       <x>20</x>
-       <y>30</y>
-       <width>181</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Automatycznie wygeneruj klucz</string>
-     </property>
-    </widget>
     <widget class="QLabel" name="label_3">
      <property name="geometry">
       <rect>
        <x>40</x>
-       <y>80</y>
-       <width>46</width>
-       <height>13</height>
+       <y>60</y>
+       <width>31</width>
+       <height>16</height>
       </rect>
      </property>
      <property name="text">
@@ -262,18 +249,99 @@
      <property name="geometry">
       <rect>
        <x>80</x>
-       <y>80</y>
-       <width>231</width>
+       <y>60</y>
+       <width>71</width>
        <height>20</height>
       </rect>
+     </property>
+     <property name="maxLength">
+      <number>8</number>
+     </property>
+    </widget>
+    <widget class="QRadioButton" name="manualKeyRadioButton">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>30</y>
+       <width>201</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Wprowadź klucz ręcznie (8 znaków)</string>
+     </property>
+    </widget>
+    <widget class="QRadioButton" name="keyFromFileRadioButton">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>90</y>
+       <width>101</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Użyj pliku klucza</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="browseKeyFileButton">
+     <property name="geometry">
+      <rect>
+       <x>510</x>
+       <y>120</y>
+       <width>75</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Przeglądaj</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_4">
+     <property name="geometry">
+      <rect>
+       <x>40</x>
+       <y>120</y>
+       <width>101</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Ściekażka do klucza</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="keyFileNameTextBox">
+     <property name="geometry">
+      <rect>
+       <x>150</x>
+       <y>120</y>
+       <width>351</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="autoGenerateKeyCheckBox">
+     <property name="geometry">
+      <rect>
+       <x>40</x>
+       <y>150</y>
+       <width>301</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Wygeneruj nowy plik klucza i zapisz pod wybraną ścieżką</string>
      </property>
     </widget>
    </widget>
    <widget class="QPushButton" name="executeButton">
     <property name="geometry">
      <rect>
-      <x>30</x>
-      <y>480</y>
+      <x>20</x>
+      <y>560</y>
       <width>75</width>
       <height>23</height>
      </rect>
@@ -285,8 +353,8 @@
    <widget class="QProgressBar" name="progressBar">
     <property name="geometry">
      <rect>
-      <x>30</x>
-      <y>530</y>
+      <x>20</x>
+      <y>600</y>
       <width>631</width>
       <height>23</height>
      </rect>
@@ -344,7 +412,6 @@
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <tabstops>
-  <tabstop>autoGenerateKeyCheckBox</tabstop>
   <tabstop>decryptionRadioButton</tabstop>
   <tabstop>inputFileNameTextBox</tabstop>
   <tabstop>browseInputFileButton</tabstop>
@@ -352,7 +419,7 @@
   <tabstop>keyTextBox</tabstop>
   <tabstop>executeButton</tabstop>
   <tabstop>desAlgorithmRadioButton</tabstop>
-  <tabstop>browseKeyFileButton</tabstop>
+  <tabstop>browseOutputFileButton</tabstop>
   <tabstop>encryptionRadioButton</tabstop>
  </tabstops>
  <resources/>

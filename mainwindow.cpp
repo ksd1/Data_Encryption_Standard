@@ -17,7 +17,20 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(this,SIGNAL(inputFileName_ChangedSignal(QString)),ui->inputFileNameTextBox,SLOT(setText(QString)));
     connect(this,SIGNAL(outputFileName_ChangedSignal(QString)),ui->outputFileNameTextBox,SLOT(setText(QString)));
+    connect(this,SIGNAL(keyFileName_ChangedSignal(QString)),ui->keyFileNameTextBox,SLOT(setText(QString)));
     connect(this, SIGNAL(nextDataPartEnded_Signal(int)), this, SLOT(progressBar_ChangeValue(int)));
+
+    //First gui initialization
+
+    ui->encryptionRadioButton->setChecked(true);
+    mode = ENCRYPTION_MODE;
+
+    ui->manualKeyRadioButton->setChecked(true);
+    keyMode = MANUAL_INPUT_KEY;
+    autoGenerateKey = false;
+
+    QTime time = QTime::currentTime();
+    qsrand((uint)time.msec());
 }
 
 MainWindow::~MainWindow()
@@ -41,6 +54,74 @@ void MainWindow::setOutputFileName(QString fileName)
 
     outputFileName = fileName;
     emit outputFileName_ChangedSignal(outputFileName);
+}
+
+void MainWindow::setKeyFileName(QString fileName)
+{
+    if(keyFileName == fileName)
+        return;
+
+    keyFileName = fileName;
+    emit keyFileName_ChangedSignal(keyFileName);
+}
+
+void MainWindow::on_browseInputFileButton_clicked()
+{
+    setInputFileName(QFileDialog::getOpenFileName(this,tr("Otwórz"),QDir::homePath(),tr("*")));
+    inputFile.setFileName(inputFileName);
+}
+
+void MainWindow::progressBar_ChangeValue(int nextPart)
+{
+    int val = ui->progressBar->value() + nextPart;
+    ui->progressBar->setValue(val);
+}
+
+void MainWindow::on_executeButton_clicked()
+{
+     parseKey();
+
+    if(ui->encryptionRadioButton->isChecked())
+        encryptFile();
+    else if(ui->decryptionRadioButton->isChecked())
+        decryptFile();
+
+    //timer->start(100);
+}
+
+void MainWindow::on_browseKeyFileButton_clicked()
+{
+
+    setKeyFileName(QFileDialog::getSaveFileName(this,tr("Otwórz"),QDir::homePath(),tr("*")));
+    keyFile.setFileName(keyFileName);
+
+}
+
+void MainWindow::toCharArray(long long int value, char* buffer)
+{
+    for(int i=7; i>=0; i--)
+    {
+        buffer[i] = value&0xFF;
+        value = value >> 8;
+    }
+}
+
+void MainWindow::setProgressBarMax(int max)
+{
+    ui->progressBar->setMaximum(max);
+}
+
+void MainWindow::on_decryptionRadioButton_clicked()
+{
+    ui->autoGenerateKeyCheckBox->setEnabled(false);
+    mode = DECRYPTION_MODE;
+}
+
+void MainWindow::on_encryptionRadioButton_clicked()
+{
+    if(keyMode == FILE_KEY)
+        ui->autoGenerateKeyCheckBox->setEnabled(true);
+    mode = ENCRYPTION_MODE;
 }
 
 int MainWindow::encryptFile()
@@ -77,7 +158,7 @@ int MainWindow::encryptFile()
             temp = (long long int)tab[i];
             data |= temp&0xFF;
         }
-        long long int result = encrypt_message(data,tempkey);
+        long long int result = encrypt_message(data,key);
         //result = decrypt_message(result,tempkey);
         toCharArray(result, outData);
         outputFile.write(outData, 8);
@@ -96,7 +177,7 @@ int MainWindow::encryptFile()
         }
     }
     emit nextDataPartEnded_Signal(rest);
-    long long int result = encrypt_message(data,tempkey);
+    long long int result = encrypt_message(data,key);
     toCharArray(result, outData);
     outputFile.write(outData, 8);
 
@@ -137,7 +218,7 @@ int MainWindow::decryptFile()
             temp = (long long int)tab[i];
             data |= temp&0xFF;
         }
-        long long int result = decrypt_message(data,tempkey);
+        long long int result = decrypt_message(data,key);
         toCharArray(result, outData);
         outputFile.write(outData, 8);
         emit nextDataPartEnded_Signal(8);
@@ -149,45 +230,94 @@ int MainWindow::decryptFile()
     return 2;
 }
 
-void MainWindow::on_browseInputFileButton_clicked()
+long long int generateRandomKey()
 {
-    setInputFileName(QFileDialog::getOpenFileName(this,tr("Otwórz"),QDir::homePath(),tr("*")));
-    inputFile.setFileName(inputFileName);
+    long long int key=0, temp=0;
+
+    for(int i=0; i<8; i++)
+    {
+        key <<= 8;
+        temp = qrand() % ((255 + 1) - 1) + 1;
+        key |= temp;
+    }
+
+    return key;
+
+    //return 0x133457799BBCDFF1;
 }
 
-void MainWindow::progressBar_ChangeValue(int nextPart)
+void MainWindow::on_browseOutputFileButton_clicked()
 {
-    int val = ui->progressBar->value() + nextPart;
-    ui->progressBar->setValue(val);
-}
-
-void MainWindow::on_executeButton_clicked()
-{
-    if(ui->encryptionRadioButton->isChecked())
-        encryptFile();
-    else if(ui->decryptionRadioButton->isChecked())
-        decryptFile();
-
-    //timer->start(100);
-}
-
-void MainWindow::on_browseKeyFileButton_clicked()
-{
-
     setOutputFileName(QFileDialog::getSaveFileName(this,tr("Otwórz"),QDir::homePath(),tr("*")));
     outputFile.setFileName(outputFileName);
 }
 
-void MainWindow::toCharArray(long long int value, char* buffer)
+void MainWindow::on_manualKeyRadioButton_clicked()
 {
-    for(int i=7; i>=0; i--)
-    {
-        buffer[i] = value&0xFF;
-        value = value >> 8;
-    }
+    keyMode = MANUAL_INPUT_KEY;
+    ui->keyTextBox->setEnabled(true);
+
+    ui->keyFileNameTextBox->setEnabled(false);
+
+    ui->autoGenerateKeyCheckBox->setEnabled(false);
 }
 
-void MainWindow::setProgressBarMax(int max)
+void MainWindow::on_keyFromFileRadioButton_clicked()
 {
-    ui->progressBar->setMaximum(max);
+    keyMode = FILE_KEY;
+    ui->keyFileNameTextBox->setEnabled(true);
+    if(mode != DECRYPTION_MODE)
+        ui->autoGenerateKeyCheckBox->setEnabled(true);
+
+    ui->keyTextBox->setEnabled(false);
+}
+
+void MainWindow::parseKey()
+{
+    char *keyTab = new char[8];
+    long long int parsedKey = 0, temp = 0;
+    QByteArray array;
+
+    if(autoGenerateKey == true)
+    {
+        key = generateRandomKey();
+        toCharArray(key,keyTab);
+        keyFile.open(QIODevice::ReadWrite);
+        keyFile.write(keyTab,8);
+        keyFile.close();
+    }
+    else
+    {
+        if(keyMode == MANUAL_INPUT_KEY)
+        {
+            QString keyString = ui->keyTextBox->text();
+            array = keyString.toLocal8Bit();
+            keyTab = array.data();
+        }
+        else if(keyMode == FILE_KEY)
+        {
+            keyFile.open(QIODevice::ReadOnly);
+            keyFile.read(keyTab,8);
+        }
+
+        for(int i=0; i<8; i++)
+        {
+            parsedKey <<= 8;
+            temp = (long long int)keyTab[i];
+            parsedKey |= temp&0xFF;
+        }
+
+        key = parsedKey;
+    }
+
+}
+
+void MainWindow::on_autoGenerateKeyCheckBox_stateChanged(int arg1)
+{
+    autoGenerateKey = arg1;
+
+    if(autoGenerateKey == true)
+    {
+        QMessageBox::warning(this,tr("Ostrzeżenie"),tr("To ustawienie spowoduje nadpisanie pliku klucza!"),QMessageBox::Ok);
+    }
 }
